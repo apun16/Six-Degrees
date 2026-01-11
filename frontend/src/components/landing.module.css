@@ -84,9 +84,10 @@
   line-height: 1.4;
 }
 .description {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
-  margin-bottom: var(--space-2xl);
+  margin-top: 0.35rem;
+  margin-bottom: 2.5rem;
   letter-spacing: 0.05em;
 }
 
@@ -169,7 +170,7 @@
 }
 
 .hintText {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
   letter-spacing: 0.08em;
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -180,7 +181,6 @@
   opacity: 0;
   transform: translateY(-5px);
 }
-
 @media (max-width: 480px) {
   .content {
     padding: var(--space-md);
