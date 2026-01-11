@@ -12,7 +12,7 @@ class GameService:
         # embedding service for generating word vectors
         # semantic graph for finding paths between words
 
-    def __init__(self, similarity_threshold: float = 0.4, word_file: Optional[str] = None):
+    def __init__(self, similarity_threshold: float = 0.55, word_file: Optional[str] = None):
         # init game service
         logger.info("Initializing game service...")
 

@@ -10,11 +10,11 @@ class SemanticGraph:
     # words are nodes and edges represent semantic connections
     # edges are implicit - created dynamically based on cosine similarity threshold
 
-    def __init__(self, embedding_service: EmbeddingService, similarity_threshold: float = 0.4):
+    def __init__(self, embedding_service: EmbeddingService, similarity_threshold: float = 0.55):
         # init semantic graph
         # embedding_service: service for generating word embeddings
         # similarity_threshold: minimum cosine similarity for words to be considered connected
-        # default 0.4 provides more logical connections for all-MiniLM-L6-v2
+        # 0.55 provides more logical connections for all-MiniLM-L6-v2
         
         self.embedding_service = embedding_service
         self.similarity_threshold = similarity_threshold

@@ -51,6 +51,108 @@
     justify-content: center;
     transition: all 0.2s ease;
   }
+
+  .iconBtn:hover {
+    background: rgba(232, 200, 122, 0.1);
+    transform: scale(1.05);
+  }
+
+  .iconBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Modal Overlay */
+  .modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--space-lg);
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modalContent {
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Score Modal */
+  .scoreModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    padding: var(--space-lg);
+    animation: fadeIn 0.2s ease;
+  }
+
+  .scoreContent {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-2xl);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    animation: slideUp 0.3s ease;
+  }
+
+  .scoreTitle {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    color: var(--accent);
+    margin-bottom: var(--space-md);
+  }
+
+  .scoreMessage {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+  }
+
+  .algorithmPath {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border);
+  }
+
+  .pathLabel {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+  }
+
+  .pathText {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
   
   @media (max-width: 480px) {
     .header {
