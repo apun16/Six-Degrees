@@ -62,12 +62,16 @@ export const api = {
 
   // Validate a word in the chain
   validateWord: async (word, currentPath, startWord) => {
+    // Build full path including start word for duplicate check
+    const fullPath = startWord ? [startWord, ...(currentPath || [])] : (currentPath || [])
+    
     return apiRequest('/game/validate', {
       method: 'POST',
       body: JSON.stringify({
         word,
         currentPath: currentPath || [],
         startWord,
+        fullPath: fullPath, // Include full path for duplicate checking
       }),
     })
   },
@@ -85,9 +89,9 @@ export const api = {
   },
 
   // Get hint
-  getHint: async (startWord, targetWord, currentPath = []) => {
+  getHint: async (startWord, targetWord, currentPath = [], hintLevel = 1) => {
     const pathStr = currentPath.join(',')
-    return apiRequest(`/game/hint?startWord=${encodeURIComponent(startWord)}&targetWord=${encodeURIComponent(targetWord)}&currentPath=${encodeURIComponent(pathStr)}`)
+    return apiRequest(`/game/hint?startWord=${encodeURIComponent(startWord)}&targetWord=${encodeURIComponent(targetWord)}&currentPath=${encodeURIComponent(pathStr)}&hintLevel=${hintLevel}`)
   },
 
   // Get stats

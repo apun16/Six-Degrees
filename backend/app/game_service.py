@@ -12,7 +12,7 @@ class GameService:
         # embedding service for generating word vectors
         # semantic graph for finding paths between words
 
-    def __init__(self, similarity_threshold: float = 0.55, word_file: Optional[str] = None):
+    def __init__(self, similarity_threshold: float = 0.49, word_file: Optional[str] = None):
         # init game service
         logger.info("Initializing game service...")
 
@@ -29,15 +29,15 @@ class GameService:
 
         logger.info("Game service initialized successfully")
 
-    def _preload_words(self, max_words: int = 200):
-        # pre-load a subset of words into the semantic graph 
-        # this creates the graph structure in advance
+    def _preload_words(self, max_words: int = 1000):
+        # pre-load words into the semantic graph 
+        # this creates the graph structure in advance for better connectivity
         all_words = self.word_database.get_all_words()
         words_to_load = all_words[:max_words]
 
         logger.info(f"Pre-loading {len(words_to_load)} words into semantic graph...")
         self.semantic_graph.add_words(words_to_load)
-        logger.info("Pre-loading complete")
+        logger.info(f"Pre-loading complete. Graph now has {len(self.semantic_graph.get_all_words())} words")
 
     def validate_word(self, word: str) -> bool:
         # validate a word
@@ -70,7 +70,16 @@ class GameService:
         if not path or len(path) < 1:
             return False, "Path must contain at least 1 word"
 
-        if len(path) > 7:  # 6 steps = 7 words
+        # Paths must be between 2-6 steps
+        # Steps = words - 1 (start -> word1 -> word2 -> ... -> end)
+        # 2 steps = 3 words (start -> w1 -> end)
+        # 6 steps = 7 words (start -> w1 -> w2 -> w3 -> w4 -> w5 -> w6 -> end)
+        steps = len(path) - 1
+        
+        if steps < 2:
+            return False, "Path must have at least 2 steps (3 words)"
+        
+        if steps > 6:
             return False, "Path exceeds maximum of 6 steps"
 
         # check for duplicates
@@ -106,17 +115,21 @@ class GameService:
         # calculate score based on player path vs algorithm's optimal path
         # returns: (score, message, algorithm_path)
         
-        # validate player path first
+        # Always find optimal path first (even if player path is invalid)
+        algorithm_path = self.find_optimal_path(start_word, target_word, max_steps=6)
+        
+        # validate player path
         is_valid, error_msg = self.validate_path(player_path)
         if not is_valid:
-            return 0, error_msg, None
+            # Return optimal path even when player path is invalid
+            return 0, error_msg, algorithm_path
         
         # check that path starts and ends correctly
         if player_path[0].lower().strip() != start_word.lower().strip():
-            return 0, f"Path must start with '{start_word}'", None
+            return 0, f"Path must start with '{start_word}'", algorithm_path
         
         if player_path[-1].lower().strip() != target_word.lower().strip():
-            return 0, f"Path must end with '{target_word}'", None
+            return 0, f"Path must end with '{target_word}'", algorithm_path
         
         # get algorithm's optimal path
         algorithm_path = self.find_optimal_path(start_word, target_word, max_steps=6)
@@ -161,7 +174,7 @@ class GameService:
         return score, message, algorithm_path
 
     def get_random_word_pair(self) -> Tuple[str, str]:
-        # get a random pair of words that have a path between them
+        # get a random pair of words that have a path between them (2-6 steps)
         import random
 
         # prefer words already in the graph to avoid cold start BFS problem
@@ -184,11 +197,14 @@ class GameService:
             if not self.semantic_graph.word_exists(target_word):
                 self.semantic_graph.add_word(target_word)
 
-            # try to find a path
+            # try to find a path (max 6 steps)
             path = self.semantic_graph.bfs_path(start_word, target_word, max_steps=6)
             if path:
-                logger.debug(f"Found path pair: {start_word} -> {target_word} ({len(path)-1} steps)")
-                return start_word, target_word
+                steps = len(path) - 1
+                # Only accept paths with 2-6 steps
+                if 2 <= steps <= 6:
+                    logger.debug(f"Found path pair: {start_word} -> {target_word} ({steps} steps)")
+                    return start_word, target_word
 
         # fallback: try with all words from database
         logger.warning("Could not find connected pair in pre-loaded words, trying all words...")
@@ -201,8 +217,10 @@ class GameService:
 
             path = self.find_optimal_path(start_word, target_word, max_steps=6)
             if path:
-                return start_word, target_word
-
+                steps = len(path) - 1
+                # Only accept paths with 2-6 steps
+                if 2 <= steps <= 6:
+                    return start_word, target_word
         # last resort: return any two different words (may not have a path)
-        logger.warning("Could not find connected word pair, returning random pair")
+        logger.warning("Could not find connected word pair with 2-6 steps, returning random pair")
         return all_words[0], all_words[1] if len(all_words) > 1 else all_words[0]

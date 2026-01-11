@@ -1,33 +1,68 @@
+/* Word Input - Elegant Text Field */
+
 .input {
-  flex: 1;
-  padding: var(--space-md);
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  font-size: 1rem;
-  font-family: var(--font-mono);
-  outline: none;
-  transition: all var(--transition-fast);
-  text-transform: uppercase;
-}
-
-.input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(232, 200, 122, 0.1);
-}
-
-.input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.inputError {
-  border-color: var(--error);
-  background: rgba(200, 122, 122, 0.05);
-}
-
-.input::placeholder {
-  color: var(--text-muted);
-  text-transform: none;
-}
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: var(--space-md) var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .input:focus {
+    border-color: var(--accent);
+    box-shadow: 
+      0 0 0 3px rgba(232, 200, 122, 0.1),
+      0 4px 20px rgba(0, 0, 0, 0.2);
+    background: var(--bg-elevated);
+  }
+  
+  .input:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: var(--bg-primary);
+  }
+  
+  .input::placeholder {
+    font-weight: 400;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    opacity: 0.7;
+  }
+  
+  .inputError {
+    border-color: var(--error);
+    background: rgba(200, 122, 122, 0.05);
+    animation: shake 0.3s ease;
+  }
+  
+  .inputError:focus {
+    border-color: var(--error);
+    box-shadow: 
+      0 0 0 3px rgba(200, 122, 122, 0.1),
+      0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+  }
+  
+  /* Responsive */
+  @media (max-width: 480px) {
+    .input {
+      font-size: 0.9rem;
+      padding: var(--space-md);
+    }
+  }

@@ -29,17 +29,28 @@ class WordDatabase:
             'ocean', 'wave', 'beach', 'sand', 'water', 'river', 'lake', 'mountain', 'forest', 'tree',
             'flower', 'grass', 'sun', 'moon', 'star', 'sky', 'cloud', 'rain', 'snow', 'wind',
             
-            # Animals
-            'bird', 'fish', 'dog', 'cat', 'horse', 'lion', 'tiger', 'elephant', 'whale', 'shark',
-            'eagle', 'owl', 'bear', 'wolf', 'rabbit', 'mouse', 'snake', 'spider', 'butterfly', 'bee',
+            # Animals & Nature
+            'animal', 'creature', 'beast', 'mammal', 'reptile', 'amphibian', 'insect', 'bird', 'fish', 
+            'dog', 'cat', 'horse', 'cow', 'pig', 'sheep', 'goat', 'chicken', 'duck', 'goose',
+            'lion', 'tiger', 'leopard', 'cheetah', 'panther', 'jaguar', 'elephant', 'rhino', 'hippo', 'giraffe',
+            'zebra', 'monkey', 'ape', 'gorilla', 'chimpanzee', 'bear', 'panda', 'polar', 'grizzly', 'black',
+            'wolf', 'fox', 'coyote', 'deer', 'moose', 'elk', 'rabbit', 'hare', 'squirrel', 'chipmunk',
+            'mouse', 'rat', 'hamster', 'guinea', 'ferret', 'raccoon', 'skunk', 'opossum', 'badger', 'beaver',
+            'whale', 'dolphin', 'shark', 'octopus', 'squid', 'crab', 'lobster', 'seal', 'walrus', 'otter',
+            'eagle', 'hawk', 'falcon', 'owl', 'crow', 'raven', 'parrot', 'penguin', 'flamingo', 'swan',
+            'snake', 'python', 'cobra', 'viper', 'lizard', 'gecko', 'iguana', 'turtle', 'tortoise', 'crocodile',
+            'alligator', 'frog', 'toad', 'salamander', 'spider', 'scorpion', 'ant', 'bee', 'wasp', 'butterfly',
+            'moth', 'dragonfly', 'grasshopper', 'cricket', 'beetle', 'ladybug', 'mosquito', 'fly', 'worm',
             
             # Music & Sound
             'music', 'song', 'sound', 'voice', 'piano', 'guitar', 'violin', 'drum', 'note', 'melody',
             'rhythm', 'harmony', 'concert', 'orchestra', 'singer', 'composer', 'keyboard', 'key',
+            'instrument', 'trumpet', 'flute', 'saxophone', 'cello', 'harp', 'banjo', 'accordion',
             
             # Colours
             'red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'black', 'white', 'gray',
-            'brown', 'gold', 'silver', 'color', 'paint', 'brush', 'canvas', 'art', 'picture',
+            'brown', 'gold', 'silver', 'color', 'colour', 'hue', 'shade', 'tint', 'tone',
+            'paint', 'brush', 'canvas', 'art', 'picture',
             
             # Emotions
             'love', 'hate', 'joy', 'sadness', 'fear', 'anger', 'peace', 'war', 'hope', 'dream',
@@ -84,10 +95,101 @@ class WordDatabase:
             # Science & Learning
             'science', 'math', 'physics', 'chemistry', 'biology', 'history', 'language', 'word',
             'letter', 'number', 'equation', 'theory', 'experiment', 'research', 'study', 'learn',
+            'school', 'university', 'college', 'education', 'class', 'lesson', 'test', 'exam',
+            'teacher', 'professor', 'student', 'pupil', 'homework', 'assignment', 'grade', 'degree',
+            
+            # Writing & Office Supplies
+            'pencil', 'pen', 'marker', 'crayon', 'chalk', 'eraser', 'sharpener', 'notebook',
+            'journal', 'diary', 'notepad', 'sketchbook', 'folder', 'binder', 'stapler', 'clip',
+            'tape', 'glue', 'scissors', 'ruler', 'calculator', 'desk', 'office', 'work',
             
             # More abstract connections
             'fire', 'flame', 'heat', 'light', 'dark', 'shadow', 'bright', 'dim', 'warm', 'cold',
-            'hot', 'ice', 'freeze', 'melt', 'solid', 'liquid', 'gas', 'energy', 'force', 'motion'
+            'hot', 'ice', 'freeze', 'melt', 'solid', 'liquid', 'gas', 'energy', 'force', 'motion',
+            
+            # Weather & Climate
+            'weather', 'climate', 'temperature', 'humidity', 'storm', 'thunder', 'lightning',
+            'hurricane', 'tornado', 'blizzard', 'drought', 'flood', 'fog', 'mist', 'dew',
+            
+            # Plants & Trees
+            'plant', 'tree', 'leaf', 'branch', 'root', 'seed', 'sprout', 'bud', 'bloom',
+            'rose', 'tulip', 'daisy', 'sunflower', 'lily', 'orchid', 'cactus', 'fern',
+            'oak', 'pine', 'maple', 'birch', 'willow', 'palm', 'bamboo', 'ivy',
+            
+            # Vehicles & Transportation
+            'vehicle', 'car', 'truck', 'bus', 'train', 'plane', 'airplane', 'helicopter',
+            'boat', 'ship', 'yacht', 'submarine', 'bicycle', 'motorcycle', 'scooter', 'skateboard',
+            'taxi', 'ambulance', 'firetruck', 'police', 'ambulance', 'van', 'suv', 'sedan',
+            
+            # Buildings & Architecture
+            'building', 'house', 'home', 'apartment', 'condo', 'mansion', 'cottage', 'cabin',
+            'castle', 'palace', 'tower', 'skyscraper', 'church', 'temple', 'mosque', 'synagogue',
+            'school', 'hospital', 'library', 'museum', 'theater', 'stadium', 'arena', 'mall',
+            
+            # Clothing & Fashion
+            'clothing', 'clothes', 'shirt', 'pants', 'dress', 'skirt', 'jacket', 'coat',
+            'sweater', 'hoodie', 't-shirt', 'jeans', 'shorts', 'socks', 'shoes', 'boots',
+            'sneakers', 'sandals', 'hat', 'cap', 'gloves', 'scarf', 'belt', 'tie',
+            
+            # Furniture & Home
+            'furniture', 'chair', 'table', 'desk', 'sofa', 'couch', 'bed', 'mattress',
+            'pillow', 'blanket', 'sheet', 'curtain', 'carpet', 'rug', 'lamp', 'light',
+            'mirror', 'picture', 'frame', 'shelf', 'cabinet', 'drawer', 'door', 'window',
+            
+            # Kitchen & Cooking
+            'kitchen', 'cook', 'cooking', 'recipe', 'ingredient', 'spice', 'salt', 'pepper',
+            'knife', 'fork', 'spoon', 'plate', 'bowl', 'cup', 'glass', 'mug',
+            'pot', 'pan', 'oven', 'stove', 'microwave', 'refrigerator', 'freezer', 'sink',
+            
+            # Technology & Electronics
+            'technology', 'electronic', 'device', 'gadget', 'appliance', 'machine', 'robot',
+            'phone', 'smartphone', 'tablet', 'laptop', 'computer', 'monitor', 'screen', 'display',
+            'keyboard', 'mouse', 'printer', 'scanner', 'camera', 'television', 'tv', 'radio',
+            
+            # Sports & Recreation
+            'sport', 'sports', 'athletic', 'exercise', 'fitness', 'workout', 'training', 'practice',
+            'football', 'soccer', 'basketball', 'baseball', 'tennis', 'golf', 'swimming', 'running',
+            'cycling', 'hiking', 'climbing', 'skiing', 'surfing', 'skating', 'dancing', 'yoga',
+            
+            # Entertainment & Media
+            'entertainment', 'media', 'television', 'movie', 'film', 'cinema', 'theater', 'show',
+            'music', 'song', 'album', 'artist', 'band', 'concert', 'performance', 'stage',
+            'book', 'novel', 'story', 'tale', 'fiction', 'nonfiction', 'magazine', 'newspaper',
+            
+            # Nature & Geography
+            'geography', 'landscape', 'terrain', 'valley', 'canyon', 'plateau', 'hill', 'cliff',
+            'island', 'peninsula', 'coast', 'shore', 'harbor', 'bay', 'gulf', 'strait',
+            'desert', 'jungle', 'tundra', 'prairie', 'meadow', 'field', 'farm', 'ranch',
+            
+            # Time & Calendar
+            'calendar', 'date', 'holiday', 'birthday', 'anniversary', 'celebration', 'party', 'festival',
+            'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'weekend',
+            'january', 'february', 'march', 'april', 'may', 'june', 'july', 'august',
+            'september', 'october', 'november', 'december', 'today', 'tomorrow', 'yesterday',
+            
+            # Emotions & Feelings (expanded)
+            'happiness', 'sadness', 'anger', 'fear', 'surprise', 'disgust', 'excitement', 'boredom',
+            'anxiety', 'stress', 'relief', 'calm', 'peaceful', 'nervous', 'confident', 'shy',
+            'proud', 'ashamed', 'embarrassed', 'guilty', 'innocent', 'jealous', 'envious', 'grateful',
+            
+            # Body Parts (expanded)
+            'organ', 'lung', 'liver', 'kidney', 'stomach', 'intestine', 'throat', 'neck',
+            'shoulder', 'elbow', 'wrist', 'ankle', 'knee', 'hip', 'back', 'chest',
+            'stomach', 'belly', 'waist', 'thigh', 'calf', 'shin', 'toe', 'nail',
+            
+            # Food & Drinks (expanded)
+            'beverage', 'drink', 'juice', 'soda', 'water', 'beer', 'wine', 'cocktail',
+            'breakfast', 'lunch', 'dinner', 'snack', 'dessert', 'candy', 'sweet', 'sour',
+            'spicy', 'salty', 'bitter', 'tasty', 'delicious', 'yummy', 'gross', 'disgusting',
+            
+            # Colors (expanded)
+            'color', 'colour', 'hue', 'shade', 'tint', 'tone', 'bright', 'dark', 'light',
+            'vibrant', 'dull', 'vivid', 'pale', 'rich', 'deep', 'pastel', 'neon',
+            
+            # Shapes & Forms
+            'shape', 'form', 'circle', 'square', 'triangle', 'rectangle', 'oval', 'diamond',
+            'sphere', 'cube', 'cylinder', 'cone', 'pyramid', 'round', 'flat', 'curved',
+            'straight', 'zigzag', 'spiral', 'wavy', 'smooth', 'rough', 'sharp', 'blunt'
         ]
         
         self.words = {word.lower().strip() for word in default_words}

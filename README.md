@@ -10,10 +10,10 @@ TO DO LIST
 - [X] create game page
     - [X] navbar -> refresh option + ? information page
     - [X] footer -> links to github + @2026 + objective
-    - [ ] implement info page + refresh 
-    - [ ] word input page + hint & submit button
-    - [ ] try implementing dynamic hints -> share next word after their last correct one or hints if the target next word is part of a semantic cluster (ex: Animals, Colours, etc)
-    - [ ] add word progress animation where they can see how many words they have submitted + the path laid out
+    - [X] implement info page + refresh 
+    - [X] word input page + hint & submit button
+    - [ ] N/A - try implementing dynamic hints -> share next word after their last correct one or hints if the target next word is part of a semantic cluster (ex: Animals, Colours, etc)
+    - [X] add word progress animation where they can see how many words they have submitted + the path laid out
     - [ ] semi transparent dot design patern in the background
 - [X] implement game logic
     - [X] rules on information page

@@ -69,10 +69,20 @@ def get_optimal_path():
                 'steps': None
             }), 404
         
+        steps = len(path) - 1
+        # Ensure path is within 2-6 steps range
+        if steps < 2 or steps > 6:
+            return jsonify({
+                'success': False,
+                'error': f'Path has {steps} steps, must be between 2-6 steps',
+                'path': None,
+                'steps': None
+            }), 400
+        
         return jsonify({
             'success': True,
             'path': path,
-            'steps': len(path) - 1
+            'steps': steps
         }), 200
     except Exception as e:
         logger.error(f"Error finding path: {e}")
@@ -90,6 +100,7 @@ def validate_word_in_chain():
         word = data.get('word')
         current_path = data.get('currentPath', [])
         start_word = data.get('startWord')
+        full_path = data.get('fullPath', [])  # Frontend may send full path
         
         if not word:
             return jsonify({
@@ -108,20 +119,28 @@ def validate_word_in_chain():
                 'error': f"Word '{word}' is not in the database"
             }), 200
         
+        # Build full path for duplicate checking (including start word)
+        if not full_path:
+            full_path = [start_word] + current_path if start_word else current_path
+        else:
+            # Ensure we have start word in full path
+            if start_word and start_word.lower() not in [w.lower() for w in full_path]:
+                full_path = [start_word] + full_path
+        
+        # check if word is duplicate (including start word)
+        if word.lower().strip() in [w.lower().strip() for w in full_path]:
+            return jsonify({
+                'success': True,
+                'valid': False,
+                'error': 'Word already used in path'
+            }), 200
+        
         # if no current path, word is valid (it's the first word)
         if not current_path or len(current_path) == 0:
             return jsonify({
                 'success': True,
                 'valid': True,
                 'message': 'Word is valid'
-            }), 200
-        
-        # check if word is duplicate
-        if word.lower().strip() in [w.lower().strip() for w in current_path]:
-            return jsonify({
-                'success': True,
-                'valid': False,
-                'error': 'Word already used in path'
             }), 200
         
         # check semantic connection with last word in path
@@ -186,27 +205,20 @@ def calculate_score():
         game_service = get_game_service()
         score, message, algorithm_path = game_service.calculate_score(path, start_word, target_word)
         
-        if score == 0 and algorithm_path is None:
-            # validation error
-            return jsonify({
-                'success': True,
-                'score': 0,
-                'message': message,
-                'valid': False,
-                'algorithmPath': None,
-                'playerSteps': len(path) - 1,
-                'algorithmSteps': None
-            }), 200
-        
+        # Always return optimal path, even if player path is invalid
         algorithm_steps = len(algorithm_path) - 1 if algorithm_path else None
+        player_steps = len(path) - 1
+        
+        # Determine if path is valid: score > 0 means valid path
+        is_valid = score > 0
         
         return jsonify({
             'success': True,
             'score': score,
             'message': message,
-            'valid': True,
+            'valid': is_valid,
             'algorithmPath': algorithm_path,
-            'playerSteps': len(path) - 1,
+            'playerSteps': player_steps,
             'algorithmSteps': algorithm_steps
         }), 200
     except Exception as e:
@@ -316,55 +328,100 @@ def get_hint():
         if current_path:
             current_words = [w.strip() for w in current_path.split(',') if w.strip()]
         
-        # determine hint based on current progress
+        # get hint level (how many times user has asked for hint)
+        hint_level = int(request.args.get('hintLevel', 1))
+        
+        # Always find the next word to hint at
+        hint_word = None
+        
+        # Build full path including start word to check for duplicates
+        full_path = [start_word.lower()] + [w.lower() for w in current_words]
+        used_words = set(full_path)
+        
         if not current_words or len(current_words) == 0:
-            # no progress yet - hint: next word from optimal path
+            # no progress yet - hint: next word from optimal path (excluding start word)
             hint_word = optimal_path[1] if len(optimal_path) > 1 else None
-            hint_type = 'next_word'
-            message = f"Try connecting '{start_word}' to a word related to '{hint_word}'"
+            # Make sure hint word isn't the start word
+            if hint_word and hint_word.lower() in used_words:
+                hint_word = optimal_path[2] if len(optimal_path) > 2 else None
         elif current_words[-1].lower() == target_word.lower():
             # already at target
             hint_word = None
-            hint_type = 'complete'
             message = "You've reached the target word!"
         else:
             # find where we are in optimal path
             last_word = current_words[-1].lower()
-            hint_word = None
-            hint_type = 'next_word'
             
-            # find next word in optimal path
+            # find next word in optimal path (excluding already used words)
             for i, word in enumerate(optimal_path):
                 if word.lower() == last_word and i < len(optimal_path) - 1:
-                    hint_word = optimal_path[i + 1]
-                    message = f"Try connecting '{last_word}' to '{hint_word}'"
+                    # Check next words in optimal path, skip if already used
+                    for j in range(i + 1, len(optimal_path)):
+                        candidate = optimal_path[j]
+                        if candidate.lower() not in used_words:
+                            hint_word = candidate
+                            break
                     break
             
-            # if not found in optimal path, suggest a semantic neighbor
+            # if not found in optimal path, suggest a semantic neighbor (excluding used words)
             if not hint_word:
                 neighbors = list(game_service.semantic_graph.get_neighbors(last_word))
                 if neighbors:
-                    # find neighbor closest to target
+                    # find neighbor closest to target that hasn't been used
                     best_neighbor = None
                     best_similarity = -1
-                    for neighbor in neighbors[:10]:  # check first 10 neighbors
+                    for neighbor in neighbors:
+                        # Skip if already used
+                        if neighbor.lower() in used_words:
+                            continue
                         sim = game_service.get_word_similarity(neighbor, target_word)
                         if sim > best_similarity:
                             best_similarity = sim
                             best_neighbor = neighbor
                     hint_word = best_neighbor
-                    message = f"Try a word related to '{last_word}' that's closer to '{target_word}'"
-                else:
-                    hint_word = optimal_path[1] if len(optimal_path) > 1 else None
-                    message = f"Continue towards '{target_word}'"
+                
+                # Fallback: try optimal path words
+                if not hint_word:
+                    for word in optimal_path:
+                        if word.lower() not in used_words:
+                            hint_word = word
+                            break
+        
+        # Generate letter reveal hints only
+        masked_word = None
+        word_length = None
+        fully_revealed = False
+        message = ""
+        
+        if hint_word:
+            word_length = len(hint_word)
+            # Progressive letter reveal based on hint level
+            letters_to_reveal = min(hint_level, len(hint_word))
+            
+            if letters_to_reveal >= len(hint_word):
+                # Fully revealed
+                masked_word = hint_word.upper()
+                fully_revealed = True
+                message = f"The word is '{hint_word.upper()}'"
+            else:
+                # Partially revealed
+                revealed = hint_word[:letters_to_reveal].upper()
+                hidden = '_' * (len(hint_word) - letters_to_reveal)
+                masked_word = revealed + hidden
+                message = f"Revealing {letters_to_reveal} letter{'s' if letters_to_reveal > 1 else ''}"
+        else:
+            message = "Continue towards the target word"
         
         return jsonify({
             'success': True,
             'hint': {
                 'word': hint_word,
-                'type': hint_type,
                 'message': message,
-                'optimalPathLength': len(optimal_path) - 1
+                'masked_word': masked_word,
+                'word_length': word_length,
+                'fully_revealed': fully_revealed,
+                'optimalPathLength': len(optimal_path) - 1,
+                'hint_level': hint_level
             }
         }), 200
     except Exception as e:

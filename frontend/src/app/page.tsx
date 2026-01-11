@@ -19,6 +19,9 @@ interface Hint {
   hint: string
   hint_level: number
   word?: string
+  masked_word?: string
+  word_length?: number
+  fully_revealed?: boolean
   steps_remaining?: number
 }
 
@@ -30,6 +33,7 @@ interface ResultData {
   player_length: number
   optimal_length: number
   score: number
+  valid: boolean
 }
 
 export default function Page() {
@@ -85,6 +89,9 @@ export default function Page() {
       
       if (result.valid) {
         setChain([...chain, word])
+        // Reset hints when a new word is added
+        setHint(null)
+        setHintsUsed(0)
         return true
       } else {
         setError(result.error || 'Invalid word')
@@ -128,6 +135,7 @@ export default function Page() {
         player_length: result.playerSteps || chain.length,
         optimal_length: result.algorithmSteps || 0,
         score: result.score || 0,
+        valid: result.valid !== undefined ? result.valid : (result.score > 0),
       })
       
       setShowResults(true)
@@ -147,18 +155,22 @@ export default function Page() {
     setError(null)
     
     try {
-      const result = await api.getHint(puzzle.start_word, puzzle.end_word, chain)
+      const hintLevel = hintsUsed + 1
+      const result = await api.getHint(puzzle.start_word, puzzle.end_word, chain, hintLevel)
       
       if (result.success && result.hint) {
         const hintData: Hint = {
           hint: result.hint.message,
-          hint_level: hintsUsed + 1,
+          hint_level: result.hint.hint_level || hintLevel,
           word: result.hint.word,
+          masked_word: result.hint.masked_word,
+          word_length: result.hint.word_length,
+          fully_revealed: result.hint.fully_revealed || false,
           steps_remaining: result.hint.optimalPathLength - chain.length,
         }
         
         setHint(hintData)
-        setHintsUsed(hintsUsed + 1)
+        setHintsUsed(hintLevel)
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to get hint'
@@ -243,7 +255,6 @@ export default function Page() {
             </div>
           </footer>
 
-          {/* How to Play Modal */}
           {showHowToPlay && (
             <div className={styles.modalOverlay} onClick={() => setShowHowToPlay(false)}>
               <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>

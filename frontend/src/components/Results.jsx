@@ -13,10 +13,11 @@ function Results({ result, onPlayAgain }) {
     player_length,
     optimal_length,
     score,
+    valid,
   } = result
 
-  // path is valid if player_length > 0 (score can be > 0 for partial credit now)
-  const isValid = player_length > 0
+  // Use valid flag from backend - path is valid only if semantically connected
+  const isValid = valid === true
   const beatAlgorithm = isValid && player_length < optimal_length
   const hasPartialCredit = !isValid && score > 0
 
@@ -165,9 +166,11 @@ Score: ${score}`
   }
 
   const getMessage = () => {
+    // First check if path is valid - if not, show error message
     if (!isValid) {
       return "Your chain didn't connect the words. One or more words weren't linked."
     }
+    // Only show comparison messages if path is valid
     if (beatAlgorithm) {
       const diff = optimal_length - player_length
       return `You found a path ${diff} step${diff > 1 ? 's' : ''} shorter than the algorithm!`
@@ -251,14 +254,22 @@ Score: ${score}`
 
         <div className={styles.pathSection}>
           <h3 className={styles.pathTitle}>working path</h3>
-          <div className={`${styles.path} ${styles.optimalPath}`}>
-            {optimal_path.map((word, i) => (
-              <span key={i} className={styles.pathWord}>{word}</span>
-            ))}
-          </div>
-          <div className={styles.pathLength}>
-            {optimal_length} step{optimal_length !== 1 ? 's' : ''}
-          </div>
+          {optimal_path && optimal_path.length > 0 ? (
+            <>
+              <div className={`${styles.path} ${styles.optimalPath}`}>
+                {optimal_path.map((word, i) => (
+                  <span key={i} className={styles.pathWord}>{word}</span>
+                ))}
+              </div>
+              <div className={styles.pathLength}>
+                {optimal_length > 0 ? `${optimal_length} step${optimal_length !== 1 ? 's' : ''}` : 'No path found'}
+              </div>
+            </>
+          ) : (
+            <div className={styles.pathLength}>
+              No path found
+            </div>
+          )}
         </div>
       </div>
       <div className={styles.actions}>

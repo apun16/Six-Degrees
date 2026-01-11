@@ -1,156 +1,228 @@
+/* Word Chain - Visual Path Display */
+
 .chain {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  padding: var(--space-lg) 0;
-  min-height: 120px;
-}
-
-.step {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.word {
-  padding: var(--space-sm) var(--space-md);
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-serif);
-  font-size: 1rem;
-  color: var(--text-primary);
-  font-style: italic;
-  min-width: 80px;
-  text-align: center;
-  transition: all var(--transition-fast);
-  position: relative;
-}
-
-.startWord {
-  border-color: var(--accent);
-  background: rgba(232, 200, 122, 0.05);
-  color: var(--accent);
-}
-
-.chainWord {
-  border-color: var(--border);
-  cursor: pointer;
-}
-
-.chainWord:hover {
-  border-color: var(--error);
-  background: rgba(200, 122, 122, 0.05);
-}
-
-.targetWord {
-  border-color: var(--success);
-  background: rgba(122, 200, 138, 0.05);
-  color: var(--success);
-  opacity: 0.6;
-}
-
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: var(--space-lg);
+    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-elevated) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    min-height: 140px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Subtle decorative line */
+  .chain::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, 
+      transparent 0%, 
+      var(--border) 20%, 
+      var(--border) 80%, 
+      transparent 100%
+    );
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Word pills */
+  .word {
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: 20px;
+    font-family: var(--font-mono);
+    font-size: clamp(0.6rem, 2vw, 0.8rem);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    min-width: 100px;
+    max-width: 150px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .startWord {
+    background: linear-gradient(135deg, var(--accent) 0%, #d4a84a 100%);
+    color: var(--bg-primary);
+    box-shadow: 0 2px 10px rgba(232, 200, 122, 0.3);
+  }
+  
+  .chainWord {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+  
+  .chainWord:hover {
+    border-color: var(--error);
+    background: rgba(200, 122, 122, 0.1);
+    transform: scale(1.02);
+  }
+  
+  .chainWord:hover .removeHint {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+  
 .removeHint {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--error);
-  color: var(--bg-primary);
-  border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 600;
-  font-family: var(--font-mono);
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%) scale(0.8);
+  opacity: 0;
+  color: var(--error);
+  font-size: 1rem;
+  font-weight: 300;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 10;
 }
-
-.connector {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-xs);
-  position: relative;
-}
-
-.line {
-  width: 40px;
-  height: 2px;
-  background: var(--border);
-  position: relative;
-}
-
-.lineDashed {
-  width: 40px;
-  height: 2px;
-  background: repeating-linear-gradient(
-    to right,
-    var(--border) 0px,
-    var(--border) 4px,
-    transparent 4px,
-    transparent 8px
-  );
-}
-
-.stepNumber {
-  font-size: 0.625rem;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.empty {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-xl);
-  color: var(--text-muted);
-}
-
-.emptyIcon {
-  font-size: 1.5rem;
-  opacity: 0.3;
-  letter-spacing: 0.2em;
-}
-
-.emptyText {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-}
-
-.emptyHint {
-  font-size: 0.625rem;
-  opacity: 0.6;
-  font-style: italic;
-}
-
-@media (max-width: 480px) {
-  .chain {
-    gap: var(--space-xs);
-    min-height: 100px;
+  
+  .targetWord {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--text-muted);
+    opacity: 0.6;
   }
   
-  .word {
-    min-width: 70px;
-    padding: var(--space-xs) var(--space-sm);
-    font-size: 0.875rem;
+  /* Connector between words */
+  .connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-xs) 0;
+    position: relative;
   }
   
-  .line,
+  .line {
+    width: 2px;
+    height: 20px;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dim) 100%);
+    border-radius: 1px;
+  }
+  
   .lineDashed {
-    width: 30px;
+    width: 2px;
+    height: 20px;
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--text-muted) 0px,
+      var(--text-muted) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+    opacity: 0.4;
   }
   
-  .empty {
-    padding: var(--space-lg);
+  .stepNumber {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.5rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--bg-card);
+    padding: 2px 5px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
   }
-}
+  
+  /* Empty state */
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+    text-align: center;
+    gap: var(--space-md);
+  }
+  
+  .emptyChain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: var(--space-sm) 0;
+  }
+  
+  .emptyCircle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--text-muted);
+    opacity: 0.3;
+  }
+  
+  .emptyLine {
+    width: 20px;
+    height: 2px;
+    background: var(--text-muted);
+    opacity: 0.2;
+  }
+  
+  .emptyText {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  
+  .emptyHint {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    margin-top: var(--space-xs);
+  }
+  
+  /* Responsive */
+  @media (max-width: 480px) {
+    .chain {
+      padding: var(--space-md);
+      min-height: 120px;
+    }
+    
+    .word {
+      padding: var(--space-xs) var(--space-md);
+      font-size: 0.75rem;
+      min-width: 90px;
+    }
+    
+    .line, .lineDashed {
+      height: 16px;
+    }
+    
+    .stepNumber {
+      font-size: 0.45rem;
+      right: -16px;
+    }
+  }
+  
+  @media (max-width: 360px) {
+    .word {
+      font-size: 0.7rem;
+      padding: var(--space-xs) var(--space-sm);
+      min-width: 80px;
+    }
+  }

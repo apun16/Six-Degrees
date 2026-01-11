@@ -62,7 +62,7 @@ function Game({
       <div className={styles.puzzle}>
         <div className={styles.wordBox}>
           <div className={styles.wordLabel}>start</div>
-          <div className={styles.wordText}>{puzzle.start_word}</div>
+          <div className={styles.wordText}>{puzzle.start_word.toUpperCase()}</div>
         </div>
         
         <div className={styles.puzzleConnector}>
@@ -72,7 +72,7 @@ function Game({
         
         <div className={styles.wordBox}>
           <div className={styles.wordLabel}>goal</div>
-          <div className={styles.wordText}>{puzzle.end_word}</div>
+          <div className={styles.wordText}>{puzzle.end_word.toUpperCase()}</div>
         </div>
       </div>
 
@@ -84,9 +84,9 @@ function Game({
           />
         </div>
         <div className={styles.progressText}>
-          <span>{stepsUsed} of 6 steps used</span>
+          <span>{stepsUsed} OF 6 STEPS USED</span>
           <span className={`${styles.progressSteps} ${stepsRemaining <= 1 ? styles.warning : ''}`}>
-            {stepsRemaining} remaining
+            {stepsRemaining} REMAINING
           </span>
         </div>
       </div>
@@ -104,7 +104,7 @@ function Game({
             value={inputValue}
             onChange={setInputValue}
             onKeyDown={handleKeyDown}
-            placeholder={chain.length === 0 ? 'type your first word...' : 'add next word...'}
+            placeholder="add next word..."
             disabled={isLoading || stepsRemaining <= 0}
             error={error}
           />
@@ -142,6 +142,7 @@ function Game({
           
           <p className={styles.hintText}>{hint.hint}</p>
           
+          {/* Progressive letter reveal */}
           {hint.masked_word && (
             <div className={styles.maskedWord}>
               {hint.masked_word.split('').map((char, i) => (
@@ -179,11 +180,10 @@ function Game({
         <button
           className={styles.hintBtn}
           onClick={onGetHint}
-          disabled={isLoading || (hint && hint.fully_revealed)}
+          disabled={isLoading}
         >
           <span>💡</span>
-          <span>{hint ? 'more' : 'hint'}</span>
-          {hintsUsed > 0 && <span>({hintsUsed})</span>}
+          <span>HINT</span>
         </button>
         
         <button
@@ -191,7 +191,7 @@ function Game({
           onClick={onSubmit}
           disabled={!canSubmit || isLoading}
         >
-          submit chain
+          SUBMIT CHAIN
         </button>
       </div>
     </div>
