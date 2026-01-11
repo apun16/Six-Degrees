@@ -5,7 +5,7 @@ TO DO LIST
 - [X] init frontend + backend
 - [X] create intial landing page
     - [ ] add network design to landing page
-    - [ ] functional play button linked to game page
+    - [X] functional play button linked to game page
     - [ ] example connections that periodically flip through
 - [ ] create game page
     - [ ] navbar -> refresh option + ? information page

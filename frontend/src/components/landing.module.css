@@ -1,4 +1,4 @@
-/* Landing Page - Minimal & Elegant */
+/* Landing Page - Minimal & Elegant - in progress */
 
 .landing {
     position: fixed;
@@ -82,6 +82,72 @@
     margin-bottom: var(--space-md);
     max-width: 300px;
     line-height: 1.4;
+  }
+  .description {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: var(--space-2xl);
+    letter-spacing: 0.05em;
+  }
+  
+  .playBtn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-lg) var(--space-2xl);
+    background: transparent;
+    border: 2px solid var(--accent);
+    border-radius: 100px;
+    color: var(--accent);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .playBtn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: -1;
+  }
+  
+  .playBtn:hover {
+    color: var(--bg-primary);
+    border-color: var(--accent);
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(232, 200, 122, 0.3);
+  }
+  
+  .playBtn:hover::before {
+    transform: scaleX(1);
+  }
+  
+  .playBtn:active {
+    transform: scale(0.98);
+  }
+  
+  .playText {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .playArrow {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+  }
+  
+  .playBtn:hover .playArrow {
+    transform: translateX(4px);
   }
     
   @media (max-width: 480px) {

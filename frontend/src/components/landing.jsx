@@ -38,7 +38,12 @@ function Landing({ onPlay }) {
         
         <p className={styles.description}>
           every word links to another. find the path.
-        </p>        
+        </p>
+
+        <button className={styles.playBtn} onClick={onPlay}>
+          <span className={styles.playText}>play</span>
+          <span className={styles.playArrow}>→</span>
+        </button>        
       </div>
     </div>
   )
