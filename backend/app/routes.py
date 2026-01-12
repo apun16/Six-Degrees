@@ -9,15 +9,39 @@ game_bp = Blueprint('game', __name__)
 _game_service = None
 
 def get_game_service():
+    # lazy initialization of game service
+    # with --preload flag, this should only run once at startup
     global _game_service
     if _game_service is None:
+        logger.info("Initializing game service (first request)...")
         _game_service = GameService()
+        logger.info("Game service initialized and ready")
     return _game_service
 
 @game_bp.route('/health', methods=['GET'])
 def health_check():
     # game health check
     return jsonify({'status': 'ok'}), 200
+
+@game_bp.route('/warmup', methods=['GET'])
+def warmup():
+    # warmup endpoint to pre-initialize the game service
+    # call this on deployment to avoid cold start latency
+    try:
+        game_service = get_game_service()
+        # verify service is ready
+        words_in_graph = len(game_service.semantic_graph.get_all_words())
+        return jsonify({
+            'success': True,
+            'status': 'ready',
+            'words_preloaded': words_in_graph
+        }), 200
+    except Exception as e:
+        logger.error(f"Warmup error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @game_bp.route('/game/new', methods=['GET'])
 def new_game():

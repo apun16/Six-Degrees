@@ -5,9 +5,12 @@ from sentence_transformers import SentenceTransformer
 import logging
 
 # set cache directory for model (matches Dockerfile)
-os.environ.setdefault('TRANSFORMERS_CACHE', '/app/models')
+# Use HF_HOME instead of TRANSFORMERS_CACHE (deprecated)
 os.environ.setdefault('HF_HOME', '/app/models')
 os.environ.setdefault('HF_DATASETS_CACHE', '/app/models')
+# remove deprecated TRANSFORMERS_CACHE to avoid warnings
+if 'TRANSFORMERS_CACHE' in os.environ:
+    del os.environ['TRANSFORMERS_CACHE']
 
 logger = logging.getLogger(__name__)
 

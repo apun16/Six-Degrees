@@ -29,13 +29,20 @@ class GameService:
 
         logger.info("Game service initialized successfully")
 
-    def _preload_words(self, max_words: int = 1000):
-        # pre-load words into the semantic graph 
-        # this creates the graph structure in advance for better connectivity
+    def _preload_words(self, max_words: int = 400):
+        # pre-load words into the semantic graph for better connectivity
+        # increased to 400 for better variety while maintaining speed
+        # uses random sampling to ensure diverse word selection
+        import random
         all_words = self.word_database.get_all_words()
-        words_to_load = all_words[:max_words]
+        
+        # Use random sampling instead of first N words for better variety
+        if len(all_words) > max_words:
+            words_to_load = random.sample(all_words, max_words)
+        else:
+            words_to_load = all_words
 
-        logger.info(f"Pre-loading {len(words_to_load)} words into semantic graph...")
+        logger.info(f"Pre-loading {len(words_to_load)} diverse words into semantic graph...")
         self.semantic_graph.add_words(words_to_load)
         logger.info(f"Pre-loading complete. Graph now has {len(self.semantic_graph.get_all_words())} words")
 
@@ -175,29 +182,27 @@ class GameService:
 
     def get_random_word_pair(self) -> Tuple[str, str]:
         # get a random pair of words that have a path between them (2-6 steps)
+        # optimized for speed: prefer pre-loaded words, but allow fallback
         import random
 
-        # prefer words already in the graph to avoid cold start BFS problem
+        # prefer words already in the graph (pre-loaded) for speed
         words_in_graph = self.semantic_graph.get_all_words()
         all_words = self.word_database.get_all_words()
+        
+        if not words_in_graph:
+            # fallback if graph is empty
+            words_in_graph = all_words[:100]
 
-        # if we have words in the graph, use them preferentially
-        candidate_words = words_in_graph if words_in_graph else all_words
-
-        max_attempts = 100
-
+        # Try with pre-loaded words first (fast)
+        max_attempts = 40
         for _ in range(max_attempts):
-            start_word = random.choice(candidate_words)
-            target_word = random.choice(candidate_words)
+            start_word = random.choice(words_in_graph)
+            target_word = random.choice(words_in_graph)
 
             if start_word == target_word:
                 continue
-            if not self.semantic_graph.word_exists(start_word):
-                self.semantic_graph.add_word(start_word)
-            if not self.semantic_graph.word_exists(target_word):
-                self.semantic_graph.add_word(target_word)
 
-            # try to find a path (max 6 steps)
+            # both words are already in graph, so BFS should be fast
             path = self.semantic_graph.bfs_path(start_word, target_word, max_steps=6)
             if path:
                 steps = len(path) - 1
@@ -206,21 +211,50 @@ class GameService:
                     logger.debug(f"Found path pair: {start_word} -> {target_word} ({steps} steps)")
                     return start_word, target_word
 
-        # fallback: try with all words from database
-        logger.warning("Could not find connected pair in pre-loaded words, trying all words...")
+        # fallback: try with all words (slower but more variety)
+        # only do this if pre-loaded words didn't work
+        logger.debug("Trying fallback with all words for more variety...")
         for _ in range(20):
             start_word = random.choice(all_words)
             target_word = random.choice(all_words)
 
             if start_word == target_word:
                 continue
+            
+            # ensure words are in graph (will add if not)
+            if not self.semantic_graph.word_exists(start_word):
+                self.semantic_graph.add_word(start_word)
+            if not self.semantic_graph.word_exists(target_word):
+                self.semantic_graph.add_word(target_word)
 
-            path = self.find_optimal_path(start_word, target_word, max_steps=6)
+            path = self.semantic_graph.bfs_path(start_word, target_word, max_steps=6)
             if path:
                 steps = len(path) - 1
-                # Only accept paths with 2-6 steps
                 if 2 <= steps <= 6:
                     return start_word, target_word
-        # last resort: return any two different words (may not have a path)
-        logger.warning("Could not find connected word pair with 2-6 steps, returning random pair")
+
+        # last resort: return a known good pair
+        common_pairs = [
+            ('cat', 'dog'), ('cat', 'animal'), ('dog', 'pet'),
+            ('bird', 'animal'), ('tree', 'plant'), ('flower', 'plant'),
+            ('car', 'vehicle'), ('house', 'building'), ('book', 'read'),
+            ('happy', 'joy'), ('sad', 'emotion'), ('red', 'color')
+        ]
+        
+        for start, target in common_pairs:
+            if self.validate_word(start) and self.validate_word(target):
+                # Ensure in graph
+                if not self.semantic_graph.word_exists(start):
+                    self.semantic_graph.add_word(start)
+                if not self.semantic_graph.word_exists(target):
+                    self.semantic_graph.add_word(target)
+                    
+                path = self.semantic_graph.bfs_path(start, target, max_steps=6)
+                if path:
+                    steps = len(path) - 1
+                    if 2 <= steps <= 6:
+                        return start, target
+        
+        # final fallback
+        logger.warning("Could not find connected word pair, returning random pair")
         return all_words[0], all_words[1] if len(all_words) > 1 else all_words[0]

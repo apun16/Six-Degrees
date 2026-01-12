@@ -34,10 +34,10 @@ TO DO LIST
     - [X] api/route test (etc...)
 - [X] Share button to send result + play game link via Messages, Notes, etc
 - [X] implemented play count with Supabase
-- [ ] GitHub Actions is okay with full codebase
+- [X] GitHub Actions is okay with full codebase
 - [ ] Update README.md with finalized design choice + overview
 - [ ] clear documentation/comments
 - [X] deploy on vercel + vercel page analytics to see how people are playing :)
 - [ ] continue optimizing algo + UI + get feedback from others to make it more enjoyable (maybe a leaderboard???)
-
+- [ ] fix the latency ?
 TECH STACK/TOOLS: TypeScript + JavaScript, Python, CSS, Flask, Next.js, Framer Motion, Sentence Transformers, Supabase, Github Actions (CI/CD Pipelines), pytest + jest
