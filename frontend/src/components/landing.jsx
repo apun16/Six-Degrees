@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import styles from './landing.module.css'
+import styles from '../styles/landing.module.css'
 
 const SAMPLE_CHAINS = [
   'HEART → LOVE → FAMILY → HOME → HOUSE',

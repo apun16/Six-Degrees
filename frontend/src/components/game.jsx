@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react'
 import WordChain from './wordchain'
 import WordInput from './wordinput'
-import styles from './game.module.css'
+import styles from '../styles/game.module.css'
 
 function Game({ 
   puzzle, 

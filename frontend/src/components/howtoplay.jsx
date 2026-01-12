@@ -1,4 +1,4 @@
-import styles from './howtoplay.module.css'
+import styles from '../styles/howtoplay.module.css'
 
 // fix rules
 function HowToPlay({ onClose }) {

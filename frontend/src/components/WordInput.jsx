@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react'
-import styles from './wordinput.module.css'
+import styles from '../styles/wordinput.module.css'
 
 function WordInput({ 
   value, 

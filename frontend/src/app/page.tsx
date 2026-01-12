@@ -7,7 +7,7 @@ import Results from '../components/results'
 import HowToPlay from '../components/howtoplay'
 import GitHubIcon from '../components/GitHubIcon' 
 import { api } from '../utils/api'
-import styles from '../components/page.module.css'
+import styles from '../styles/page.module.css'
 
 interface Puzzle {
   start_word: string

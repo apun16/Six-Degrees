@@ -63,7 +63,7 @@ class WordDatabase:
             
             # Food
             'apple', 'bread', 'cake', 'chocolate', 'coffee', 'tea', 'fruit', 'vegetable', 'rice',
-            'meat', 'fish', 'soup', 'salad', 'pizza', 'burger', 'sandwich', 'cheese', 'milk',
+            'meat', 'fish', 'soup', 'salad', 'pizza', 'burger', 'sandwich', 'cheese', 'milk', 'food'
             
             # Actions & Movement
             'run', 'walk', 'jump', 'fly', 'swim', 'dance', 'sing', 'play', 'work', 'rest',

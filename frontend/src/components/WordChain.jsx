@@ -1,4 +1,4 @@
-import styles from './wordchain.module.css'
+import styles from '../styles/wordchain.module.css'
 
 function WordChain({ startWord, endWord, chain, onRemoveWord }) {
   const allWords = [startWord, ...chain]
