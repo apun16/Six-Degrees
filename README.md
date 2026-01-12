@@ -14,7 +14,7 @@ TO DO LIST
     - [X] word input page + hint & submit button
     - [ ] N/A - try implementing dynamic hints -> share next word after their last correct one or hints if the target next word is part of a semantic cluster (ex: Animals, Colours, etc)
     - [X] add word progress animation where they can see how many words they have submitted + the path laid out
-    - [ ] semi transparent dot design patern in the background
+    - [X] semi transparent dot design patern in the background
 - [X] implement game logic
     - [X] rules on information page
     - [X] scoring that depend on beating algorithm with points given accordingly
@@ -35,7 +35,7 @@ TO DO LIST
     - [ ] player path test
     - [ ] scoring test
     - [ ] api/route test (etc...)
-- [ ] Share button to send result + play game link via Messages, Notes, etc
+- [X] Share button to send result + play game link via Messages, Notes, etc
 - [ ] GitHub Actions is okay with full codebase
 - [ ] Update README.md with finalized design choice + overview
 - [ ] clear documentation/comments
