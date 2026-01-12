@@ -4,6 +4,10 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 import logging
 
+# Set cache directory for model (matches Dockerfile)
+os.environ.setdefault('TRANSFORMERS_CACHE', '/app/models')
+os.environ.setdefault('HF_HOME', '/app/models')
+
 logger = logging.getLogger(__name__)
 
 class EmbeddingService:

@@ -1,9 +1,8 @@
 // API utility functions for backend communication
-// In production, set NEXT_PUBLIC_API_URL in Vercel environment variables
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || (
   typeof window !== 'undefined' && window.location.hostname === 'localhost'
     ? 'http://localhost:5001/api'
-    : 'https://YOUR-RAILWAY-URL.up.railway.app/api'  // Replace with your Railway URL
+    : 'https://6-degrees-production.up.railway.app/api'
 )
 
 async function apiRequest(endpoint, options = {}) {
