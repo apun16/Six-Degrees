@@ -22,11 +22,11 @@ TO DO LIST
     - [X] BFS implemented to find optimal path between 2 words
     - [X] implement cosine similarity to measure how related words are
     - [X] connect words by meaning -> words embeded in vectors + store this meaning
-- [ ] Implement frontend testing using Jest
-    - [ ] Game State test
-    - [ ] API test
-    - [ ] Score Render test
-    - [ ] Path Input Validation test (etc...)
+- [X] Implement frontend testing using Jest
+    - [X] Game State test
+    - [X] API test
+    - [X] Score Render test
+    - [X] Path Input Validation test (etc...)
 - [ ] Implement backend testing using PyTest
     - [ ] embedding generated test
     - [ ] semantic simulated test
@@ -40,7 +40,7 @@ TO DO LIST
 - [ ] GitHub Actions is okay with full codebase
 - [ ] Update README.md with finalized design choice + overview
 - [ ] clear documentation/comments
-- [X]s deploy on vercel + vercel page analytics to see how people are playing :)
+- [X] deploy on vercel + vercel page analytics to see how people are playing :)
 - [ ] continue optimizing algo + UI + get feedback from others to make it more enjoyable (maybe a leaderboard???)
 
 TECH STACK/TOOLS: TypeScript + JavaScript, Python, CSS, Flask, Next.js, Framer Motion, Sentence Transformers, Supabase, Github Actions (CI/CD Pipelines), pytest + jest
