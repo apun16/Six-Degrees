@@ -12,7 +12,7 @@ class GameService:
         # embedding service for generating word vectors
         # semantic graph for finding paths between words
 
-    def __init__(self, similarity_threshold: float = 0.49, word_file: Optional[str] = None):
+    def __init__(self, similarity_threshold: float = 0.45, word_file: Optional[str] = None):
         # init game service
         logger.info("Initializing game service...")
 
@@ -97,20 +97,27 @@ class GameService:
         for word in path:
             if not self.validate_word(word):
                 return False, f"Word '{word}' is not in the database"
-        # check semantic connections
-        for i in range(len(path) - 1):
-            word1 = path[i].lower().strip()
-            word2 = path[i + 1].lower().strip()
-
-            if not self.semantic_graph.word_exists(word1):
-                self.semantic_graph.add_word(word1)
-            if not self.semantic_graph.word_exists(word2):
-                self.semantic_graph.add_word(word2)
+        
+        # Normalize all words first
+        normalized_path = [word.lower().strip() for word in path]
+        
+        # Batch add all words to the graph first to ensure proper connections
+        # This ensures that when we check connections, all words are already in the graph
+        # and connected to each other if they meet the similarity threshold
+        words_to_add = [word for word in normalized_path if not self.semantic_graph.word_exists(word)]
+        if words_to_add:
+            self.semantic_graph.add_words(words_to_add)
+        
+        # Now check semantic connections between consecutive words
+        # All words are now guaranteed to be in the graph
+        for i in range(len(normalized_path) - 1):
+            word1 = normalized_path[i]
+            word2 = normalized_path[i + 1]
 
             # check if words are semantically connected
+            # Both words are now guaranteed to be in the graph
             if not self.semantic_graph.are_connected(word1, word2):
-                similarity = self.semantic_graph.get_similarity(word1, word2)
-                return False, f"Words '{word1}' and '{word2}' are not semantically connected (similarity: {similarity:.3f})"
+                return False, f"Words '{word1}' and '{word2}' are not semantically connected"
 
         return True, None
 

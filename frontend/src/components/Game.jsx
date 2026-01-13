@@ -28,6 +28,7 @@ function Game({
     if (success) {
       setInputValue('')
     }
+    // If validation fails, inputValue stays so user can see what they typed
   }, [inputValue, isLoading, onAddWord])
 
   const handleKeyDown = useCallback((e) => {

@@ -163,11 +163,16 @@ def validate_word_in_chain():
         last_word = current_path[-1].lower().strip()
         word_lower = word.lower().strip()
         
-        # ensure words are in graph
+        # ensure words are in graph - batch add if both are new to ensure proper connections
+        words_to_add = []
         if not game_service.semantic_graph.word_exists(last_word):
-            game_service.semantic_graph.add_word(last_word)
+            words_to_add.append(last_word)
         if not game_service.semantic_graph.word_exists(word_lower):
-            game_service.semantic_graph.add_word(word_lower)
+            words_to_add.append(word_lower)
+        
+        # Batch add words to ensure they connect to each other properly
+        if words_to_add:
+            game_service.semantic_graph.add_words(words_to_add)
         
         # check if semantically connected
         is_connected = game_service.semantic_graph.are_connected(last_word, word_lower)
@@ -181,12 +186,10 @@ def validate_word_in_chain():
                 'similarity': similarity
             }), 200
         else:
-            similarity = game_service.semantic_graph.get_similarity(last_word, word_lower)
             return jsonify({
                 'success': True,
                 'valid': False,
-                'error': f"Word '{word}' is not semantically connected to '{current_path[-1]}'",
-                'similarity': similarity
+                'error': f"'{word}' is not semantically connected to '{current_path[-1]}'. Try a different word.",
             }), 200
     except Exception as e:
         logger.error(f"Error validating word: {e}")

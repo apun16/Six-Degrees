@@ -82,6 +82,7 @@ export default function Page() {
   const handleAddWord = useCallback(async (word: string) => {
     if (!puzzle) return false
     
+    // Clear previous error when attempting to add a new word
     setError(null)
     setIsLoading(true)
     
